@@ -7,6 +7,7 @@ import {
   Client,
   EmbedBuilder,
   GatewayIntentBits,
+  MessageFlags,
   ModalBuilder,
   PermissionsBitField,
   REST,
@@ -237,8 +238,6 @@ function panelComponents() {
   return [
     new ActionRowBuilder().addComponents(
       controlButton("reset", "RESET STREAMING DATA", ButtonStyle.Secondary, "🔄"),
-    ),
-    new ActionRowBuilder().addComponents(
       controlButton("set_token", "SET TOKEN", ButtonStyle.Primary, "🔑"),
     ),
     new ActionRowBuilder().addComponents(
@@ -251,8 +250,6 @@ function panelComponents() {
     ),
     new ActionRowBuilder().addComponents(
       controlButton("set_progress", "SET PROGRESS", ButtonStyle.Secondary, "⏱️"),
-    ),
-    new ActionRowBuilder().addComponents(
       controlButton("enable", "ENABLE", ButtonStyle.Success, "📡").setDisabled(enabled),
       controlButton("disable", "DISABLE", ButtonStyle.Danger, "⛔").setDisabled(!enabled),
     ),
@@ -284,7 +281,7 @@ async function refreshPanel() {
 async function rejectUnauthorized(interaction) {
   await interaction.reply({
     content: "Kamu memerlukan izin **Manage Server** untuk menggunakan panel ini.",
-    ephemeral: true,
+    flags: MessageFlags.Ephemeral,
   });
 }
 
@@ -308,12 +305,12 @@ client.on("interactionCreate", async (interaction) => {
     }
 
     if (interaction.isChatInputCommand() && interaction.commandName === "streaming") {
-      const reply = await interaction.reply({
+      await interaction.reply({
         content: "Panel kontrol status streaming:",
         embeds: [panelEmbed()],
         components: panelComponents(),
-        fetchReply: true,
       });
+      const reply = await interaction.fetchReply();
       panelLocation = { channelId: reply.channelId, messageId: reply.id };
       return;
     }
@@ -333,7 +330,7 @@ client.on("interactionCreate", async (interaction) => {
         await interaction.reply({
           content: "Ini konfigurasi streaming kamu saat ini.",
           files: [attachment],
-          ephemeral: true,
+          flags: MessageFlags.Ephemeral,
         });
         return;
       }
@@ -367,7 +364,7 @@ client.on("interactionCreate", async (interaction) => {
         };
         saveConfig();
         updatePresence();
-        await interaction.reply({ content: `SET PAGE ${index + 1} tersimpan.`, ephemeral: true });
+        await interaction.reply({ content: `SET PAGE ${index + 1} tersimpan.`, flags: MessageFlags.Ephemeral });
         await refreshPanel();
         return;
       }
@@ -380,7 +377,7 @@ client.on("interactionCreate", async (interaction) => {
           button2Link: interaction.fields.getTextInputValue("button2Link"),
         };
         saveConfig();
-        await interaction.reply({ content: "Button status berhasil disimpan.", ephemeral: true });
+        await interaction.reply({ content: "Button status berhasil disimpan.", flags: MessageFlags.Ephemeral });
         await refreshPanel();
         return;
       }
@@ -393,7 +390,7 @@ client.on("interactionCreate", async (interaction) => {
         config.delayTime = interaction.fields.getTextInputValue("delayTime") || "10s";
         saveConfig();
         updatePresence();
-        await interaction.reply({ content: "Link streaming berhasil disimpan.", ephemeral: true });
+        await interaction.reply({ content: "Link streaming berhasil disimpan.", flags: MessageFlags.Ephemeral });
         await refreshPanel();
         return;
       }
@@ -403,19 +400,19 @@ client.on("interactionCreate", async (interaction) => {
         config.streamDuration = interaction.fields.getTextInputValue("streamDuration");
         config.streamStartDuration = interaction.fields.getTextInputValue("streamStartDuration");
         saveConfig();
-        await interaction.reply({ content: "Progress streaming berhasil disimpan.", ephemeral: true });
+        await interaction.reply({ content: "Progress streaming berhasil disimpan.", flags: MessageFlags.Ephemeral });
         await refreshPanel();
         return;
       }
 
       if (interaction.customId === "modal_token") {
         streamingToken = interaction.fields.getTextInputValue("streamingToken");
-        await interaction.reply({ content: "Streaming token diterima dan hanya disimpan di memori bot.", ephemeral: true });
+        await interaction.reply({ content: "Streaming token diterima dan hanya disimpan di memori bot.", flags: MessageFlags.Ephemeral });
       }
     }
   } catch (error) {
     console.error("Interaction error:", error);
-    const response = { content: "Terjadi error saat memproses aksi. Coba lagi.", ephemeral: true };
+    const response = { content: "Terjadi error saat memproses aksi. Coba lagi.", flags: MessageFlags.Ephemeral };
     if (interaction.replied || interaction.deferred) await interaction.followUp(response);
     else await interaction.reply(response);
   }
