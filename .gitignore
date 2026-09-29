@@ -1,0 +1,4 @@
+node_modules/
+dist/
+data/streaming-config.json
+.env
