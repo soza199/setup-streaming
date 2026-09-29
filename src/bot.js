@@ -246,15 +246,15 @@ function panelComponents() {
       controlButton("set_page_1", "SET PAGE 2", ButtonStyle.Secondary, "📄"),
     ),
     new ActionRowBuilder().addComponents(
-      controlButton("set_button", "SET BUTTON", ButtonStyle.Secondary, "▦"),
+      controlButton("set_button", "SET BUTTON", ButtonStyle.Secondary, "🔘"),
       controlButton("set_link", "SET LINK", ButtonStyle.Secondary, "🔗"),
     ),
     new ActionRowBuilder().addComponents(
-      controlButton("set_progress", "SET PROGRESS", ButtonStyle.Secondary, "◷"),
+      controlButton("set_progress", "SET PROGRESS", ButtonStyle.Secondary, "⏱️"),
     ),
     new ActionRowBuilder().addComponents(
       controlButton("enable", "ENABLE", ButtonStyle.Success, "📡").setDisabled(enabled),
-      controlButton("disable", "DISABLE", ButtonStyle.Danger, "⏻").setDisabled(!enabled),
+      controlButton("disable", "DISABLE", ButtonStyle.Danger, "⛔").setDisabled(!enabled),
     ),
     new ActionRowBuilder().addComponents(
       controlButton("raw_json", "RAW JSON", ButtonStyle.Secondary, "⚙️"),
